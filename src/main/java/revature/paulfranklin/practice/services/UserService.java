@@ -8,6 +8,8 @@ import revature.paulfranklin.practice.entities.UserRole;
 import revature.paulfranklin.practice.enums.Role;
 import revature.paulfranklin.practice.repositories.UserRepository;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,5 +29,14 @@ public class UserService {
     public User getUser(NewLoginRequest req) {
         User user = userRepository.findByUsername(req.getUsername());
         return user;
+    }
+
+    public List<String> getUsernames() {
+        List<User> users = userRepository.findAll();
+
+        List<String> usernames = new LinkedList<>();
+        users.forEach(user -> usernames.add(user.getUsername()));
+
+        return usernames;
     }
 }
