@@ -17,8 +17,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void createNewUser(NewUserRequest req) {
+    public User createNewUser(NewUserRequest req) {
         User user = new User(UUID.randomUUID().toString(), req.getUsername(), req.getPassword(), true, new UserRole(Role.USER));
         userRepository.save(user);
+        return user;
     }
 }
