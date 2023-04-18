@@ -1,5 +1,7 @@
 package revature.paulfranklin.practice.entities;
 
+import revature.paulfranklin.practice.enums.Role;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,6 +19,11 @@ public class UserRole {
     public UserRole(String roleId, String role) {
         this.roleId = roleId;
         this.role = role;
+    }
+
+    public UserRole(Role role) {
+        this.roleId = String.valueOf(role.ordinal());
+        this.role = role.toString();
     }
 
     public String getRoleId() {
