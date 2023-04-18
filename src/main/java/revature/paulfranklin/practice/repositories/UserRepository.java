@@ -6,4 +6,5 @@ import revature.paulfranklin.practice.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+    User findByUsername(String username);
 }
