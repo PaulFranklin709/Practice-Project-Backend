@@ -24,7 +24,7 @@ public class FriendshipController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public List<Friendship> getFriends(HttpServletRequest servReq) {
+    public List<String> getFriends(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
 
         Principal principal = tokenService.retrievePrincipalFromToken(token);
