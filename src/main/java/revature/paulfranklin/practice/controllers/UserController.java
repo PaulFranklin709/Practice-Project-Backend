@@ -8,6 +8,9 @@ import revature.paulfranklin.practice.entities.User;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/users")
@@ -38,5 +41,14 @@ public class UserController {
         tokenService.createNewToken(principal);
 
         return principal;
+    }
+
+    @GetMapping
+    public List<String> getUsernames(HttpServletRequest servReq) {
+        String token = servReq.getHeader("authorization");
+
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
+
+        return userService.getUsernames();
     }
 }
