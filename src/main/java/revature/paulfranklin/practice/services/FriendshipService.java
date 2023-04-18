@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import revature.paulfranklin.practice.entities.Friendship;
 import revature.paulfranklin.practice.repositories.FriendshipRepository;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -14,7 +15,12 @@ public class FriendshipService {
         this.friendshipRepository = friendshipRepository;
     }
 
-    public List<Friendship> getFriendsByUserId(String userId) {
-        return friendshipRepository.findAllByUserUserId(userId);
+    public List<String> getFriendsByUserId(String userId) {
+        List<Friendship> friendships = friendshipRepository.findAllByUserUserId(userId);
+
+        List<String> friendNames = new LinkedList<>();
+        friendships.forEach(friendship -> friendNames.add(friendship.getFriend().getUsername()));
+
+        return friendNames;
     }
 }
