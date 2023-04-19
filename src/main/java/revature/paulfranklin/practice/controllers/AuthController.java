@@ -5,8 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewLoginRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidAuthException;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
+
+import java.sql.SQLException;
 
 @CrossOrigin
 @RestController
@@ -31,10 +34,14 @@ public class AuthController {
         try {
             user = userService.getUser(req);
 
-            if (!user.getPassword().equals(req.getPassword())) {
-                throw new Exception("Wrong password");
+            if (user == null) {
+                throw new InvalidAuthException("User was not found");
             }
-        } catch (Exception e) {
+
+            if (!user.getPassword().equals(req.getPassword())) {
+                throw new InvalidAuthException("Wrong password");
+            }
+        } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -42,5 +49,11 @@ public class AuthController {
         tokenService.createNewToken(principal);
 
         return principal;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(InvalidAuthException.class)
+    public InvalidAuthException handledAuthException (InvalidAuthException e) {
+        return e;
     }
 }
