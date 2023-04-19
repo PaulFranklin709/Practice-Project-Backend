@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public List<String> getUsernames() throws SQLException {
-        List<User> users = null;
+        List<User> users;
         try {
             users = userRepository.findAll();
         } catch (Exception e) {
