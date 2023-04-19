@@ -27,8 +27,7 @@ public class UserService {
     }
 
     public User getUser(NewLoginRequest req) {
-        User user = userRepository.findByUsername(req.getUsername());
-        return user;
+        return userRepository.findByUsername(req.getUsername());
     }
 
     public List<String> getUsernames() {
@@ -41,7 +40,6 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
+        return userRepository.findByUsername(username);
     }
 }
