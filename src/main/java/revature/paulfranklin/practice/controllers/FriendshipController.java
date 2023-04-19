@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewFriendRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.services.FriendshipService;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
@@ -30,13 +31,11 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<String> getFriends(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
-
-        Principal principal;
-        try {
-            principal = tokenService.retrievePrincipalFromToken(token);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        if (token == null || token.isEmpty()) {
+            throw new InvalidRequestException("Missing token");
         }
+
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
             return friendshipService.getFriendsByUserId(principal.getUserId());
@@ -49,11 +48,11 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.CREATED)
     public void newFriend(@RequestBody NewFriendRequest req, HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
-        if (token == null) {
-            throw new RuntimeException("Missing token");
+        if (token == null || token.isEmpty()) {
+            throw new InvalidRequestException("Missing token");
         }
         if (req.getFriendName() == null) {
-            throw new RuntimeException("Missing friend name");
+            throw new InvalidRequestException("Missing friend name");
         }
 
         Principal principal;
@@ -71,5 +70,11 @@ public class FriendshipController {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidRequestException.class)
+    public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        return e;
     }
 }
