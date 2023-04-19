@@ -61,6 +61,18 @@ public class UserController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
+            User user = userService.getUserByUsername(principal.getUsername());
+
+            if (user == null) {
+                throw new InvalidAuthException("User was not found");
+            }
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        try {
             return userService.getUsernames();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
