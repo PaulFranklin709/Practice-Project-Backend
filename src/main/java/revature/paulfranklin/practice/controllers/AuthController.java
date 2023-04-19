@@ -6,6 +6,7 @@ import revature.paulfranklin.practice.dtos.requests.NewLoginRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
 import revature.paulfranklin.practice.exceptions.InvalidAuthException;
+import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
 
@@ -27,7 +28,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Principal login(@RequestBody NewLoginRequest req) {
         if (req.getUsername() == null || req.getPassword() == null) {
-            throw new RuntimeException("Missing username or password");
+            throw new InvalidRequestException("Missing username or password");
         }
 
         User user;
@@ -54,6 +55,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(InvalidAuthException.class)
     public InvalidAuthException handledAuthException (InvalidAuthException e) {
+        return e;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidRequestException.class)
+    public InvalidRequestException handledRequestException (InvalidRequestException e) {
         return e;
     }
 }
