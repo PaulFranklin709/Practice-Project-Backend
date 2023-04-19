@@ -1,5 +1,6 @@
 package revature.paulfranklin.practice.services;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import revature.paulfranklin.practice.entities.Friendship;
 import revature.paulfranklin.practice.entities.User;
@@ -61,6 +62,8 @@ public class FriendshipService {
         Friendship friendship = new Friendship(UUID.randomUUID().toString(), user, friend);
         try {
             friendshipRepository.save(friendship);
+        } catch (DataIntegrityViolationException e) {
+            throw e;
         } catch (Exception e) {
             throw new SQLException(e);
         }
