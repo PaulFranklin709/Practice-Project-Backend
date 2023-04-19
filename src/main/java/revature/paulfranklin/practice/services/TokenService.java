@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 import revature.paulfranklin.practice.dtos.responses.Principal;
+import revature.paulfranklin.practice.exceptions.InvalidAuthException;
 import revature.paulfranklin.practice.utils.JwtConfig;
 
 import java.util.Date;
@@ -43,7 +44,7 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            throw new Exception("Not Authorized");
+            throw new InvalidAuthException("Not Authorized");
         }
 
         Principal principal = new Principal(
