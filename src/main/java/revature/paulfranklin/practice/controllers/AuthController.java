@@ -27,7 +27,7 @@ public class AuthController {
             throw new RuntimeException("Missing username or password");
         }
 
-        User user = null;
+        User user;
         try {
             user = userService.getUser(req);
 
