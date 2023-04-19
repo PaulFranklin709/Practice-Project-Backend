@@ -44,6 +44,7 @@ public class UserController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public List<String> getUsernames(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
         if (token == null) {
