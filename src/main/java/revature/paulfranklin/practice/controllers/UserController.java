@@ -54,7 +54,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public List<String> getUsernames(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
-        if (token == null) {
+        if (token == null || token.isEmpty()) {
             throw new InvalidRequestException("Missing token");
         }
 
