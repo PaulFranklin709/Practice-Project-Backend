@@ -144,7 +144,7 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
-        logger.debug(e.getMessage());
+        logger.error(e.getMessage());
         return e;
     }
 
@@ -158,7 +158,7 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidUserException.class)
     public InvalidUserException handledUserException (InvalidUserException e) {
-        logger.debug(e.getMessage());
+        logger.error(e.getMessage());
         return e;
     }
 
