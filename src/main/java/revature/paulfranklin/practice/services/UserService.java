@@ -8,6 +8,7 @@ import revature.paulfranklin.practice.entities.UserRole;
 import revature.paulfranklin.practice.enums.Role;
 import revature.paulfranklin.practice.repositories.UserRepository;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -20,18 +21,33 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createNewUser(NewUserRequest req) {
+    public User createNewUser(NewUserRequest req) throws SQLException {
         User user = new User(UUID.randomUUID().toString(), req.getUsername(), req.getPassword(), true, new UserRole(Role.USER));
-        userRepository.save(user);
+
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+
         return user;
     }
 
-    public User getUser(NewLoginRequest req) {
-        return userRepository.findByUsername(req.getUsername());
+    public User getUser(NewLoginRequest req) throws SQLException {
+        try {
+            return userRepository.findByUsername(req.getUsername());
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 
-    public List<String> getUsernames() {
-        List<User> users = userRepository.findAll();
+    public List<String> getUsernames() throws SQLException {
+        List<User> users = null;
+        try {
+            users = userRepository.findAll();
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
 
         List<String> usernames = new LinkedList<>();
         users.forEach(user -> usernames.add(user.getUsername()));
@@ -39,7 +55,11 @@ public class UserService {
         return usernames;
     }
 
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User getUserByUsername(String username) throws SQLException {
+        try {
+            return userRepository.findByUsername(username);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 }

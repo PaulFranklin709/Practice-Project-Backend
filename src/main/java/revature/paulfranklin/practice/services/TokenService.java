@@ -35,7 +35,7 @@ public class TokenService {
         return token;
     }
 
-    public Principal retrievePrincipalFromToken(String token) {
+    public Principal retrievePrincipalFromToken(String token) throws Exception {
         Claims claims;
         try {
             claims = Jwts.parser()
@@ -43,7 +43,7 @@ public class TokenService {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            throw new RuntimeException("Not Authorized");
+            throw new Exception("Not Authorized");
         }
 
         Principal principal = new Principal(

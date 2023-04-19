@@ -31,7 +31,12 @@ public class FriendshipController {
     public List<String> getFriends(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
 
-        Principal principal = tokenService.retrievePrincipalFromToken(token);
+        Principal principal = null;
+        try {
+            principal = tokenService.retrievePrincipalFromToken(token);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
         return friendshipService.getFriendsByUserId(principal.getUserId());
     }
@@ -47,15 +52,20 @@ public class FriendshipController {
             throw new RuntimeException("Missing friend name");
         }
 
-        Principal principal = tokenService.retrievePrincipalFromToken(token);
-
-        User user = userService.getUserByUsername(principal.getUsername());
-        User friend = userService.getUserByUsername(req.getFriendName());
+        Principal principal = null;
+        try {
+            principal = tokenService.retrievePrincipalFromToken(token);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
         try {
+            User user = userService.getUserByUsername(principal.getUsername());
+            User friend = userService.getUserByUsername(req.getFriendName());
+
             friendshipService.createNewFriendship(user, friend);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

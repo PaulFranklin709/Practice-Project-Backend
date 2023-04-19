@@ -34,8 +34,8 @@ public class AuthController {
             if (!user.getPassword().equals(req.getPassword())) {
                 throw new Exception("Wrong password");
             }
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
 
         Principal principal = new Principal(user.getUserId(), user.getUsername(), user.getActive(), user.getUserRole().getRole());

@@ -33,8 +33,8 @@ public class UserController {
         User user = null;
         try {
             user = userService.createNewUser(req);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
 
         Principal principal = new Principal(user.getUserId(), user.getUsername(), user.getActive(), user.getUserRole().getRole());
@@ -51,8 +51,16 @@ public class UserController {
             throw new RuntimeException("Missing token");
         }
 
-        Principal principal = tokenService.retrievePrincipalFromToken(token);
+        try {
+            Principal principal = tokenService.retrievePrincipalFromToken(token);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
-        return userService.getUsernames();
+        try {
+            return userService.getUsernames();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
