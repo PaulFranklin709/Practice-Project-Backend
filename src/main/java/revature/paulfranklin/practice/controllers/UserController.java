@@ -92,7 +92,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
-        logger.debug(e.getMessage());
+        logger.error(e.getMessage());
         return e;
     }
 
