@@ -36,8 +36,8 @@ public class FriendshipController {
         return friendshipService.getFriendsByUserId(principal.getUserId());
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("new")
+    @ResponseStatus(HttpStatus.CREATED)
     public void newFriend(@RequestBody NewFriendRequest req, HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
         if (token == null) {
