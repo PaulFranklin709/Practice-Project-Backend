@@ -85,18 +85,21 @@ public class UserController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(InvalidUserException.class)
     public InvalidUserException handledUserException (InvalidUserException e) {
+        logger.info(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        logger.debug(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidAuthException.class)
     public InvalidAuthException handledAuthException (InvalidAuthException e) {
+        logger.warn(e.getMessage());
         return e;
     }
 }
