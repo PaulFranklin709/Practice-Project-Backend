@@ -1,5 +1,7 @@
 package revature.paulfranklin.practice.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewLoginRequest;
@@ -16,6 +18,7 @@ import java.sql.SQLException;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
     private final TokenService tokenService;
 
