@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewFriendRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidAuthException;
 import revature.paulfranklin.practice.exceptions.InvalidFriendshipException;
 import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.exceptions.InvalidUserException;
@@ -42,6 +43,18 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
+            User user = userService.getUserByUsername(principal.getUsername());
+
+            if (user == null) {
+                throw new InvalidAuthException("User was not found");
+            }
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        try {
             return friendshipService.getFriendNamesByUserId(principal.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -60,6 +73,18 @@ public class FriendshipController {
         }
 
         Principal principal = tokenService.retrievePrincipalFromToken(token);
+
+        try {
+            User user = userService.getUserByUsername(principal.getUsername());
+
+            if (user == null) {
+                throw new InvalidAuthException("User was not found");
+            }
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
 
         try {
             User user = userService.getUserByUsername(principal.getUsername());
@@ -95,6 +120,18 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
+            User user = userService.getUserByUsername(principal.getUsername());
+
+            if (user == null) {
+                throw new InvalidAuthException("User was not found");
+            }
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        try {
             friendshipService.deleteFriendship(principal.getUserId(), friendName);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -116,6 +153,12 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidUserException.class)
     public InvalidUserException handledUserException (InvalidUserException e) {
+        return e;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(InvalidAuthException.class)
+    public InvalidAuthException handledAuthException (InvalidAuthException e) {
         return e;
     }
 }
