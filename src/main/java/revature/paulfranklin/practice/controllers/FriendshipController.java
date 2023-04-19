@@ -3,12 +3,12 @@ package revature.paulfranklin.practice.controllers;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import revature.paulfranklin.practice.dtos.requests.DeleteFriendRequest;
 import revature.paulfranklin.practice.dtos.requests.NewFriendRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
 import revature.paulfranklin.practice.exceptions.InvalidFriendshipException;
 import revature.paulfranklin.practice.exceptions.InvalidRequestException;
+import revature.paulfranklin.practice.exceptions.InvalidUserException;
 import revature.paulfranklin.practice.services.FriendshipService;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
@@ -65,11 +65,20 @@ public class FriendshipController {
             User user = userService.getUserByUsername(principal.getUsername());
             User friend = userService.getUserByUsername(req.getFriendName());
 
+            if (user == null) {
+                throw new InvalidUserException("User was not found");
+            }
+            if (friend == null) {
+                throw new InvalidUserException("Friend was not found");
+            }
+
             friendshipService.createNewFriendship(user, friend);
         } catch (DataIntegrityViolationException e) {
             throw new InvalidFriendshipException("Could not create the friendship");
         } catch (IllegalArgumentException e) {
             throw new InvalidFriendshipException(e.getMessage());
+        } catch (InvalidUserException e) {
+            throw e;
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -101,6 +110,12 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(InvalidFriendshipException.class)
     public InvalidFriendshipException handledFriendshipException (InvalidFriendshipException e) {
+        return e;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidUserException.class)
+    public InvalidUserException handledUserException (InvalidUserException e) {
         return e;
     }
 }
