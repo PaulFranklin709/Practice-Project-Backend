@@ -19,13 +19,19 @@ public class FriendshipService {
         this.friendshipRepository = friendshipRepository;
     }
 
-    public List<String> getFriendsByUserId(String userId) throws SQLException {
+    public List<Friendship> getFriendshipsByUserId(String userId) throws SQLException {
         List<Friendship> friendships;
         try {
             friendships = friendshipRepository.findAllByUserUserId(userId);
         } catch (Exception e) {
             throw new SQLException(e);
         }
+
+        return friendships;
+    }
+
+    public List<String> getFriendNamesByUserId(String userId) throws SQLException {
+        List<Friendship> friendships = getFriendshipsByUserId(userId);
 
         List<String> friendNames = new LinkedList<>();
         friendships.forEach(friendship -> friendNames.add(friendship.getFriend().getUsername()));
@@ -66,6 +72,25 @@ public class FriendshipService {
             throw e;
         } catch (Exception e) {
             throw new SQLException(e);
+        }
+    }
+
+    public void deleteFriendship(String userId, String friendName) throws SQLException {
+        List<Friendship> friendships = getFriendshipsByUserId(userId);
+
+        String friendshipId = null;
+        for(Friendship friendship : friendships) {
+            if (friendship.getFriend().getUsername().equals(friendName)) {
+                friendshipId = friendship.getFriendshipId();
+            }
+        }
+
+        if (friendshipId != null) {
+            try {
+                friendshipRepository.deleteById(friendshipId);
+            } catch (Exception e) {
+                throw new SQLException();
+            }
         }
     }
 }

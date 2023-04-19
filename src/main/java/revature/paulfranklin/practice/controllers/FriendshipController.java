@@ -3,6 +3,7 @@ package revature.paulfranklin.practice.controllers;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import revature.paulfranklin.practice.dtos.requests.DeleteFriendRequest;
 import revature.paulfranklin.practice.dtos.requests.NewFriendRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
@@ -41,7 +42,7 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            return friendshipService.getFriendsByUserId(principal.getUserId());
+            return friendshipService.getFriendNamesByUserId(principal.getUserId());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -70,6 +71,26 @@ public class FriendshipController {
         } catch (IllegalArgumentException e) {
             throw new InvalidFriendshipException(e.getMessage());
         } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteFriend(@RequestBody DeleteFriendRequest req, HttpServletRequest servReq) {
+        String token = servReq.getHeader("authorization");
+        if (token == null || token.isEmpty()) {
+            throw new InvalidRequestException("Missing token");
+        }
+        if (req.getFriendName() == null) {
+            throw new InvalidRequestException("Missing friend name");
+        }
+
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
+
+        try {
+            friendshipService.deleteFriendship(principal.getUserId(), req.getFriendName());
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
