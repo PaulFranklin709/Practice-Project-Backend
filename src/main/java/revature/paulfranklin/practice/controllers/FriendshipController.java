@@ -1,16 +1,19 @@
 package revature.paulfranklin.practice.controllers;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewFriendRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidFriendshipException;
 import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.services.FriendshipService;
 import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 import java.util.List;
 
 @CrossOrigin
@@ -62,7 +65,11 @@ public class FriendshipController {
             User friend = userService.getUserByUsername(req.getFriendName());
 
             friendshipService.createNewFriendship(user, friend);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidFriendshipException("Could not create the friendship");
+        } catch (IllegalArgumentException e) {
+            throw new InvalidFriendshipException(e.getMessage());
+        } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -70,6 +77,12 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        return e;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(InvalidFriendshipException.class)
+    public InvalidFriendshipException handledFriendshipException (InvalidFriendshipException e) {
         return e;
     }
 }
