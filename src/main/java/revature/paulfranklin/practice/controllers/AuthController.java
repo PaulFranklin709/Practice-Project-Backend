@@ -42,7 +42,7 @@ public class AuthController {
                 throw new InvalidAuthException("User was not found");
             }
 
-            if (!user.getPassword().equals(req.getPassword())) {
+            if (userService.badLoginPassword(user, req)) {
                 throw new InvalidAuthException("Wrong password");
             }
         } catch (SQLException e) {
