@@ -40,6 +40,9 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void newFriend(@RequestBody NewFriendRequest req, HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
+        if (token == null) {
+            throw new RuntimeException("Missing token");
+        }
         if (req.getFriendName() == null) {
             throw new RuntimeException("Missing friend name");
         }
