@@ -55,12 +55,7 @@ public class FriendshipController {
             throw new InvalidRequestException("Missing friend name");
         }
 
-        Principal principal;
-        try {
-            principal = tokenService.retrievePrincipalFromToken(token);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
             User user = userService.getUserByUsername(principal.getUsername());
