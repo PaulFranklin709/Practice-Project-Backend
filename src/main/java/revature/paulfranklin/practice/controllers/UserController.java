@@ -46,6 +46,9 @@ public class UserController {
     @GetMapping
     public List<String> getUsernames(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
+        if (token == null) {
+            throw new RuntimeException("Missing token");
+        }
 
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
