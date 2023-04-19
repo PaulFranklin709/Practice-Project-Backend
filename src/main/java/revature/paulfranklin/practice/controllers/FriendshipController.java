@@ -1,5 +1,7 @@
 package revature.paulfranklin.practice.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/friendships")
 public class FriendshipController {
+    private final Logger logger = LoggerFactory.getLogger(FriendshipController.class);
     private final FriendshipService friendshipService;
     private final TokenService tokenService;
     private final UserService userService;
