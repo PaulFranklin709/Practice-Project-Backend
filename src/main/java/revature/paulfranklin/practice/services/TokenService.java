@@ -36,7 +36,7 @@ public class TokenService {
         return token;
     }
 
-    public Principal retrievePrincipalFromToken(String token) throws Exception {
+    public Principal retrievePrincipalFromToken(String token) {
         Claims claims;
         try {
             claims = Jwts.parser()
