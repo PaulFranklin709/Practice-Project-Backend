@@ -30,7 +30,7 @@ public class UserController {
             throw new RuntimeException("Missing username or password");
         }
 
-        User user = null;
+        User user;
         try {
             user = userService.createNewUser(req);
         } catch (Exception e) {
