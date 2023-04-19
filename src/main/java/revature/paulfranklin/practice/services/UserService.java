@@ -1,5 +1,6 @@
 package revature.paulfranklin.practice.services;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import revature.paulfranklin.practice.dtos.requests.NewLoginRequest;
 import revature.paulfranklin.practice.dtos.requests.NewUserRequest;
@@ -26,6 +27,8 @@ public class UserService {
 
         try {
             userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw e;
         } catch (Exception e) {
             throw new SQLException(e);
         }
