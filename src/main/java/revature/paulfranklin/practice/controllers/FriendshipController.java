@@ -82,9 +82,6 @@ public class FriendshipController {
         if (token == null || token.isEmpty()) {
             throw new InvalidRequestException("Missing token");
         }
-        if (friendName == null) {
-            throw new InvalidRequestException("Missing friend name");
-        }
 
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
