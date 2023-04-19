@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewUserRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidAuthException;
 import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.exceptions.InvalidUserException;
 import revature.paulfranklin.practice.services.TokenService;
@@ -54,18 +55,14 @@ public class UserController {
     public List<String> getUsernames(HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
         if (token == null) {
-            throw new RuntimeException("Missing token");
+            throw new InvalidRequestException("Missing token");
         }
 
-        try {
-            Principal principal = tokenService.retrievePrincipalFromToken(token);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
             return userService.getUsernames();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -79,6 +76,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        return e;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(InvalidAuthException.class)
+    public InvalidAuthException handledAuthException (InvalidAuthException e) {
         return e;
     }
 }
