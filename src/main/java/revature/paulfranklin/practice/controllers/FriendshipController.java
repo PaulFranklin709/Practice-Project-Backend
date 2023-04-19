@@ -144,24 +144,28 @@ public class FriendshipController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        logger.debug(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(InvalidFriendshipException.class)
     public InvalidFriendshipException handledFriendshipException (InvalidFriendshipException e) {
+        logger.info(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidUserException.class)
     public InvalidUserException handledUserException (InvalidUserException e) {
+        logger.debug(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidAuthException.class)
     public InvalidAuthException handledAuthException (InvalidAuthException e) {
+        logger.warn(e.getMessage());
         return e;
     }
 }
