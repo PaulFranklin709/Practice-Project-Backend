@@ -79,7 +79,7 @@ public class UserController {
         return e;
     }
 
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(InvalidAuthException.class)
     public InvalidAuthException handledAuthException (InvalidAuthException e) {
         return e;
