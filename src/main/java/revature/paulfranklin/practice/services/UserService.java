@@ -65,4 +65,8 @@ public class UserService {
             throw new SQLException(e);
         }
     }
+
+    public boolean badLoginPassword(User user, NewLoginRequest req) {
+        return !user.getPassword().equals(req.getPassword());
+    }
 }
