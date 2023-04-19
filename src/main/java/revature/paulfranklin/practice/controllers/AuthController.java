@@ -58,12 +58,14 @@ public class AuthController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(InvalidAuthException.class)
     public InvalidAuthException handledAuthException (InvalidAuthException e) {
+        logger.warn(e.getMessage());
         return e;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public InvalidRequestException handledRequestException (InvalidRequestException e) {
+        logger.debug(e.getMessage());
         return e;
     }
 }
