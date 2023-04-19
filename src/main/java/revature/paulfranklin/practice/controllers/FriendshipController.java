@@ -75,21 +75,21 @@ public class FriendshipController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("delete/{friendName}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteFriend(@RequestBody DeleteFriendRequest req, HttpServletRequest servReq) {
+    public void deleteFriend(@PathVariable(name="friendName") String friendName, HttpServletRequest servReq) {
         String token = servReq.getHeader("authorization");
         if (token == null || token.isEmpty()) {
             throw new InvalidRequestException("Missing token");
         }
-        if (req.getFriendName() == null) {
+        if (friendName == null) {
             throw new InvalidRequestException("Missing friend name");
         }
 
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            friendshipService.deleteFriendship(principal.getUserId(), req.getFriendName());
+            friendshipService.deleteFriendship(principal.getUserId(), friendName);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
