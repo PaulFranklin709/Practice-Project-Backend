@@ -19,6 +19,7 @@ import revature.paulfranklin.practice.services.UserService;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -46,11 +47,8 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            User user = userService.getUserByUsername(principal.getUsername());
-
-            if (user == null) {
-                throw new InvalidAuthException("User was not found");
-            }
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
         } catch (InvalidAuthException e) {
             throw e;
         } catch (SQLException e) {
@@ -78,11 +76,8 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            User user = userService.getUserByUsername(principal.getUsername());
-
-            if (user == null) {
-                throw new InvalidAuthException("User was not found");
-            }
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
         } catch (InvalidAuthException e) {
             throw e;
         } catch (SQLException e) {
@@ -90,15 +85,11 @@ public class FriendshipController {
         }
 
         try {
-            User user = userService.getUserByUsername(principal.getUsername());
-            User friend = userService.getUserByUsername(req.getFriendName());
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            User user = userOptional.orElseGet(InvalidAuthException::userNotFound);
 
-            if (user == null) {
-                throw new InvalidUserException("User was not found");
-            }
-            if (friend == null) {
-                throw new InvalidUserException("Friend was not found");
-            }
+            Optional<User> friendOptional = userService.getUserByUsername(principal.getUsername());
+            User friend = friendOptional.orElseGet(InvalidAuthException::friendNotFound);
 
             friendshipService.createNewFriendship(user, friend);
         } catch (DataIntegrityViolationException e) {
@@ -123,11 +114,8 @@ public class FriendshipController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            User user = userService.getUserByUsername(principal.getUsername());
-
-            if (user == null) {
-                throw new InvalidAuthException("User was not found");
-            }
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
         } catch (InvalidAuthException e) {
             throw e;
         } catch (SQLException e) {
