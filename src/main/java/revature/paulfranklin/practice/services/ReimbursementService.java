@@ -1,6 +1,7 @@
 package revature.paulfranklin.practice.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import revature.paulfranklin.practice.dtos.requests.NewReimbursementRequest;
 import revature.paulfranklin.practice.dtos.responses.ReimbursementResponse;
 import revature.paulfranklin.practice.entities.Reimbursement;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ReimbursementService {
     private final ReimbursementRepository reimbursementRepository;
 
@@ -57,6 +59,15 @@ public class ReimbursementService {
             throw e;
         } catch (Exception e) {
             throw new SQLException(e);
+        }
+    }
+
+    public void updateReimbursementResolvedById(String reimbId) throws SQLException {
+        Timestamp resolved = new Timestamp(System.currentTimeMillis());
+        try {
+            reimbursementRepository.updateResolvedById(reimbId, resolved);
+        } catch (Exception e) {
+            throw new SQLException();
         }
     }
 }
