@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import revature.paulfranklin.practice.dtos.requests.NewReimbursementRequest;
+import revature.paulfranklin.practice.dtos.requests.ResolveReimbursementRequest;
 import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.dtos.responses.ReimbursementResponse;
 import revature.paulfranklin.practice.entities.User;
@@ -111,6 +112,32 @@ public class ReimbursementController {
             return reimbursementService.getReimbursementById(reimbId);
         } catch (InvalidReimbursementException e) {
             throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void resolveReimbursement(@RequestBody ResolveReimbursementRequest req, HttpServletRequest servReq) {
+        String token = servReq.getHeader("authorization");
+        if (token == null || token.isEmpty()) {
+            throw new InvalidRequestException("Missing token");
+        }
+
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
+
+        try {
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        try {
+            reimbursementService.updateReimbursementResolvedById(req.getReimbId());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
