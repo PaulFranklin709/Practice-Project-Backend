@@ -23,18 +23,18 @@ public class Reimbursement {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private User authorId;
+    private User author;
 
     public Reimbursement() {
     }
 
-    public Reimbursement(String reimbId, Double amount, Timestamp submitted, Timestamp resolved, String description, User authorId) {
+    public Reimbursement(String reimbId, Double amount, Timestamp submitted, Timestamp resolved, String description, User author) {
         this.reimbId = reimbId;
         this.amount = amount;
         this.submitted = submitted;
         this.resolved = resolved;
         this.description = description;
-        this.authorId = authorId;
+        this.author = author;
     }
 
     public String getReimbId() {
@@ -77,11 +77,11 @@ public class Reimbursement {
         this.description = description;
     }
 
-    public User getAuthorId() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(User authorId) {
-        this.authorId = authorId;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 }
