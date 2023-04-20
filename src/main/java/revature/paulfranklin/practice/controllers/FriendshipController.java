@@ -88,7 +88,7 @@ public class FriendshipController {
             Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
             User user = userOptional.orElseGet(InvalidAuthException::userNotFound);
 
-            Optional<User> friendOptional = userService.getUserByUsername(principal.getUsername());
+            Optional<User> friendOptional = userService.getUserByUsername(req.getFriendName());
             User friend = friendOptional.orElseGet(InvalidAuthException::friendNotFound);
 
             friendshipService.createNewFriendship(user, friend);
