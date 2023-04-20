@@ -17,6 +17,7 @@ import revature.paulfranklin.practice.services.UserService;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -64,11 +65,8 @@ public class UserController {
         Principal principal = tokenService.retrievePrincipalFromToken(token);
 
         try {
-            User user = userService.getUserByUsername(principal.getUsername());
-
-            if (user == null) {
-                throw new InvalidAuthException("User was not found");
-            }
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
         } catch (InvalidAuthException e) {
             throw e;
         } catch (SQLException e) {
