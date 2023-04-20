@@ -9,6 +9,7 @@ import revature.paulfranklin.practice.dtos.responses.Principal;
 import revature.paulfranklin.practice.dtos.responses.ReimbursementResponse;
 import revature.paulfranklin.practice.entities.User;
 import revature.paulfranklin.practice.exceptions.InvalidAuthException;
+import revature.paulfranklin.practice.exceptions.InvalidReimbursementException;
 import revature.paulfranklin.practice.exceptions.InvalidRequestException;
 import revature.paulfranklin.practice.services.ReimbursementService;
 import revature.paulfranklin.practice.services.TokenService;
@@ -85,6 +86,41 @@ public class ReimbursementController {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @GetMapping("id")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ReimbursementResponse getReimbursement(@RequestParam(name = "reimbId") String reimbId, HttpServletRequest servReq) {
+        String token = servReq.getHeader("authorization");
+        if (token == null || token.isEmpty()) {
+            throw new InvalidRequestException("Missing token");
+        }
+
+        Principal principal = tokenService.retrievePrincipalFromToken(token);
+
+        try {
+            Optional<User> userOptional = userService.getUserByUsername(principal.getUsername());
+            userOptional.orElseGet(InvalidAuthException::userNotFound);
+        } catch (InvalidAuthException e) {
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        try {
+            return reimbursementService.getReimbursementById(reimbId);
+        } catch (InvalidReimbursementException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidReimbursementException.class)
+    public InvalidReimbursementException handledReimbursementException (InvalidReimbursementException e) {
+        logger.error(e.getMessage());
+        return e;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
