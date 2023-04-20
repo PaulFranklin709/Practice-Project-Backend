@@ -37,11 +37,7 @@ public class UserService {
     }
 
     public User getUser(NewLoginRequest req) throws SQLException {
-        try {
-            return userRepository.findByUsername(req.getUsername());
-        } catch (Exception e) {
-            throw new SQLException(e);
-        }
+        return getUserByUsername(req.getUsername());
     }
 
     public List<String> getUsernames() throws SQLException {
