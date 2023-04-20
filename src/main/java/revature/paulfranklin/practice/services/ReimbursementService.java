@@ -31,14 +31,7 @@ public class ReimbursementService {
 
         List<ReimbursementResponse> reimbursementResponses = new LinkedList<>();
 
-        reimbursements.forEach(reimbursement -> reimbursementResponses.add(new ReimbursementResponse(
-                reimbursement.getReimbId(),
-                reimbursement.getAmount(),
-                reimbursement.getSubmitted(),
-                reimbursement.getResolved(),
-                reimbursement.getDescription(),
-                reimbursement.getAuthor().getUsername()
-        )));
+        reimbursements.forEach(reimbursement -> reimbursementResponses.add(new ReimbursementResponse(reimbursement)));
 
         return reimbursementResponses;
     }
