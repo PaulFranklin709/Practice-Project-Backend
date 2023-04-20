@@ -13,6 +13,7 @@ import revature.paulfranklin.practice.services.TokenService;
 import revature.paulfranklin.practice.services.UserService;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -36,11 +37,8 @@ public class AuthController {
 
         User user;
         try {
-            user = userService.getUser(req);
-
-            if (user == null) {
-                throw new InvalidAuthException("User was not found");
-            }
+            Optional<User> userOptional = userService.getUser(req);
+            user = userOptional.orElseGet(InvalidAuthException::userNotFound);
 
             if (userService.badLoginPassword(user, req)) {
                 throw new InvalidAuthException("Wrong password");
