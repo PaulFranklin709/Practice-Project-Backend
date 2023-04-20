@@ -5,12 +5,14 @@ import revature.paulfranklin.practice.dtos.requests.NewReimbursementRequest;
 import revature.paulfranklin.practice.dtos.responses.ReimbursementResponse;
 import revature.paulfranklin.practice.entities.Reimbursement;
 import revature.paulfranklin.practice.entities.User;
+import revature.paulfranklin.practice.exceptions.InvalidReimbursementException;
 import revature.paulfranklin.practice.repositories.ReimbursementRepository;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,6 +43,18 @@ public class ReimbursementService {
         Reimbursement reimbursement = new Reimbursement(UUID.randomUUID().toString(), req.getAmount(), timestamp, null, req.getDescription(), user);
         try {
             reimbursementRepository.save(reimbursement);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
+
+    public ReimbursementResponse getReimbursementById(String reimbId) throws SQLException {
+        try {
+            Optional<Reimbursement> reimbursementOptional = reimbursementRepository.findById(reimbId);
+            Reimbursement reimbursement = reimbursementOptional.orElseGet(InvalidReimbursementException::reimbursementNotFound);
+            return new ReimbursementResponse(reimbursement);
+        } catch (InvalidReimbursementException e) {
+            throw e;
         } catch (Exception e) {
             throw new SQLException(e);
         }
