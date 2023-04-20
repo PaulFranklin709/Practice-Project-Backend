@@ -12,6 +12,7 @@ import revature.paulfranklin.practice.repositories.UserRepository;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,7 +37,7 @@ public class UserService {
         return user;
     }
 
-    public User getUser(NewLoginRequest req) throws SQLException {
+    public Optional<User> getUser(NewLoginRequest req) throws SQLException {
         return getUserByUsername(req.getUsername());
     }
 
@@ -54,9 +55,9 @@ public class UserService {
         return usernames;
     }
 
-    public User getUserByUsername(String username) throws SQLException {
+    public Optional<User> getUserByUsername(String username) throws SQLException {
         try {
-            return userRepository.findByUsername(username);
+            return Optional.ofNullable(userRepository.findByUsername(username));
         } catch (Exception e) {
             throw new SQLException(e);
         }
