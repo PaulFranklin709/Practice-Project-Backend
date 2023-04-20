@@ -1,5 +1,7 @@
 package revature.paulfranklin.practice.dtos.responses;
 
+import revature.paulfranklin.practice.entities.Reimbursement;
+
 import java.sql.Timestamp;
 
 public class ReimbursementResponse {
@@ -21,6 +23,15 @@ public class ReimbursementResponse {
         this.resolved = resolved;
         this.description = description;
         this.author = author;
+    }
+
+    public ReimbursementResponse(Reimbursement reimbursement) {
+        this.reimbId = reimbursement.getReimbId();
+        this.amount = reimbursement.getAmount();
+        this.submitted = reimbursement.getSubmitted();
+        this.resolved = reimbursement.getResolved();
+        this.description = reimbursement.getDescription();
+        this.author = reimbursement.getAuthor().getUsername();
     }
 
     public String getReimbId() {
