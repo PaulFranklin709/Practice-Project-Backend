@@ -1,11 +1,17 @@
 package revature.paulfranklin.practice.services;
 
 import org.springframework.stereotype.Service;
+import revature.paulfranklin.practice.dtos.requests.NewReimbursementRequest;
+import revature.paulfranklin.practice.dtos.responses.ReimbursementResponse;
 import revature.paulfranklin.practice.entities.Reimbursement;
+import revature.paulfranklin.practice.entities.User;
 import revature.paulfranklin.practice.repositories.ReimbursementRepository;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ReimbursementService {
@@ -15,7 +21,7 @@ public class ReimbursementService {
         this.reimbursementRepository = reimbursementRepository;
     }
 
-    public List<Reimbursement> getReimbursementsByAuthorId(String authorId) throws SQLException {
+    public List<ReimbursementResponse> getReimbursementsByAuthorId(String authorId) throws SQLException {
         List<Reimbursement> reimbursements;
         try {
             reimbursements = reimbursementRepository.findAllByAuthorUserId(authorId);
@@ -23,6 +29,27 @@ public class ReimbursementService {
             throw new SQLException(e);
         }
 
-        return reimbursements;
+        List<ReimbursementResponse> reimbursementResponses = new LinkedList<>();
+
+        reimbursements.forEach(reimbursement -> reimbursementResponses.add(new ReimbursementResponse(
+                reimbursement.getReimbId(),
+                reimbursement.getAmount(),
+                reimbursement.getSubmitted(),
+                reimbursement.getResolved(),
+                reimbursement.getDescription(),
+                reimbursement.getAuthor().getUsername()
+        )));
+
+        return reimbursementResponses;
+    }
+
+    public void createNewReimbursement(NewReimbursementRequest req, User user) throws SQLException {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Reimbursement reimbursement = new Reimbursement(UUID.randomUUID().toString(), req.getAmount(), timestamp, null, req.getDescription(), user);
+        try {
+            reimbursementRepository.save(reimbursement);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
     }
 }
